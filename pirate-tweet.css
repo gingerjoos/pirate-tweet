@@ -1,0 +1,21 @@
+body {
+  background-color:#f7f7f7;
+  margin-left:10%;
+  margin-right:10%;
+}
+h2 {
+  font-weight:bold;
+  text-align:center;
+  background-color:#27bed7;
+  color:#ffffff;
+}
+
+.tweet {
+  width:80%;
+}
+.tweet-odd {
+  background-color:#ffffff;
+}
+.tweet-even {
+  background-color:#efefef;
+}
