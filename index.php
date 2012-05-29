@@ -10,7 +10,7 @@
 
 <?php
   require_once('common.php');
-  define(DEFAULT_TWEETNAME,'gjoos');
+  define(DEFAULT_TWEETNAME,'gingerjoos');
 ?>
 <h2>Pirate tweet</h2>
 <form action="index.php" method="GET">
@@ -26,6 +26,8 @@
     $username = DEFAULT_TWEETNAME;
   }
   $username = strip_tags($username);
+  echo get_pirate_tweets($username);
+  /*
   $yql_results = fetch_yql_results($username);
   if($yql_results['status_code'] != 200) {
     echo $yql_results['status_code'].' : There be some error!';
@@ -34,6 +36,7 @@
     $tweets = parse_tweets($yql_results['result'],$username);
     echo theme_tweets($tweets,$username);
   }
+   */
 ?>
 
 </body>

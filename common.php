@@ -34,18 +34,21 @@ function theme_tweets($tweets,$username) {
   return $output;
 }
 
-function parse_tweets($results,$username) {
-  $sxml = simplexml_load_string($results);
-  $result = $sxml->results->result;
-  $tweets = array();
-  foreach($result as $tweet) {
-    $tweets[] = $tweet[0];
-  }
-  return $tweets;
+// SELECT * FROM piratespeak.translate WHERE html IN (SELECT text from url = "http://api.twitter.com/1/statuses/user_timeline.json?screen_name=gingerjoos&count=10&include_rts=true")
+//
+//
+function get_pirate_tweets($username) {
+	$tweet_texts = fetch_tweets($username);
+	if(!$tweet_texts) {
+		return FALSE;
+	}
+	$themed_content = theme_tweets($tweet_texts,$username);
+	return translate_to_piratespeak($themed_content);
 }
 
-function fetch_yql_results($username) {
-  $url = build_result_url($username);
+function fetch_url($url,$params,$method='GET') {
+	if($method == 'GET')
+		$url = $url . '?' . http_build_query($params);
   $ch = curl_init();
   curl_setopt($ch,CURLOPT_TIMEOUT,YQL_FETCH_TIMEOUT);
   curl_setopt($ch,CURLOPT_RETURNTRANSFER,1);
@@ -53,32 +56,56 @@ function fetch_yql_results($username) {
   curl_setopt($ch,CURLOPT_URL,$url);
   $result = curl_exec($ch);
   $status_code = curl_getinfo($ch,CURLINFO_HTTP_CODE);
-  curl_close($ch);
+	curl_close($ch);
   return array(
     'status_code' => $status_code,
     'result'      => $result,
   );
 }
 
-function build_result_url($username) {
+function translate_to_piratespeak($content) {
+	$url = build_yql_url($content);
+	$api_url = $url['api_url'];
+	$params = $url['params'];
+	$response = fetch_url($api_url,$params);
+	if($response['status_code'] != '200')
+		return FALSE;
+	var_dump($response['result']);exit;
+	return $response['result'];
+}
+
+function fetch_tweets($username) {
+	$api_url = 'https://api.twitter.com/1/statuses/user_timeline.json';
+	$params = array(
+		'screen_name' => $username,
+		'include_rts' => 'true',
+	);
+	$response = fetch_url($api_url,$params);
+	if($response['status_code'] != '200')
+		return FALSE;
+	$tweets = json_decode($response['result']);
+	$tweet_text = array();
+	foreach($tweets as $tweet) {
+		$tweet_text[] = $tweet->text;
+	}
+	return $tweet_text;
+}
+
+function build_yql_url($content) {
   $api_url = 'http://query.yahooapis.com/v1/public/yql?';
-  $query = build_query($username);
+	$query = build_query($content);
+
   $params = array (
     'q'      => $query,
-    'format' => 'xml',
+    'format' => 'json',
     'env'    => 'store://kid666.com/piratespeak',
-  );
-  $query = $api_url . http_build_query($params);
-  return $query;
+	);
+	return compact('api_url','params');
 }
 
-function build_query($username) {
-  $query = 'SELECT * FROM piratespeak.translate WHERE html IN (SELECT description FROM rss WHERE url = "' . get_rss_url($username) . '")';
+function build_query($content) {
+  $query = 'SELECT * FROM piratespeak.translate WHERE html = "' . htmlentities($content) . '"';
   return $query;
-}
-
-function get_rss_url($username) {
-  return 'http://twitter.com/statuses/user_timeline/'.$username.'.rss';
 }
 
 function get_default_tweetname() {
@@ -93,3 +120,5 @@ function get_default_tweetname() {
     return 'Yer twitter username';
   }
 }
+
+// vim: tabstop=2 softtabstop=2 shiftwidth=2 expandtab ai
