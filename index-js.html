@@ -1,37 +1,54 @@
 <!DOCTYPE html>
 <html>
-	<head>
-		<meta charset="utf-8">
-		<meta name="viewport" content="width=device-width, initial-scale=1.0">
-		<link href="bootstrap/css/bootstrap.css" rel="stylesheet">
-		<link href="bootstrap/css/bootstrap-responsive.css" rel="stylesheet">
-		<script src="//ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
-		<script src="scripts/main.js"></script>
-		<style type="text/css">
-		</style>
-	</head>
-	<body>
-		<div class="navbar">
-			<div class="navbar-inner">
-				<div class="container-fluid">
-					<a class="brand" href="/">Pirate Tweet</a>
-				</div>
-			</div>
-		</div>
-		<div class="container-fluid">
-			<div class="row-fluid">
-				<div class="span2">
-					&nbsp;
-				</div>
-				<div class="span8">
-					<input type="text" name="username" id="id-username" placeholder="Your twitter username" />
-					<button class="btn btn-primary" id="id-btn" onClick="fetch_pirate_tweets();" type="submit">Fetch me tweets</button>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="bootstrap/css/bootstrap.css" rel="stylesheet">
+    <link href="bootstrap/css/bootstrap-responsive.css" rel="stylesheet">
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
+    <script src="scripts/main.js"></script>
+    <!-- would be overkill to load the css below from an external file? -->
+    <style type="text/css">
+      .loading {
+        background:url('images/loader.gif') no-repeat scroll center center #fc7 !important;
+      }
+      #pt-form {
+        padding:5%;
+        background-color:#7cf;
+        box-shadow:3px 3px 5px 6px #ccc;
+      }
+      #tweet-wrap {
+        display:none;
+        padding:5%;
+        background-color:#fc7;
+        box-shadow:3px 3px 5px 6px #ccc;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="navbar">
+      <div class="navbar-inner">
+        <div class="container-fluid">
+          <a class="brand" href="/">Pirate Tweet</a>
+        </div>
+      </div>
+    </div>
+    <div class="container-fluid">
+      <div class="row-fluid">
+        <div class="span2">
+          &nbsp;
+        </div>
+        <div class="span8">
+          <form id="pt-form" action="#">
+            <input type="text" name="username" id="id-username" placeholder="Your twitter username" />
+            <button class="btn btn-primary" id="id-btn" type="submit">Fetch me tweets</button>
+          </form>
 
-					<div id="tweet-wrap">
-					</div>
-				</div>
-			</div>
-		</div>
-	</body>
-	<!--vim: tabstop=2 softtabstop=2 shiftwidth=2 expandtab ai -->
+          <div id="tweet-wrap">
+          </div>
+        </div>
+      </div>
+    </div>
+  </body>
+  <!--vim: tabstop=2 softtabstop=2 shiftwidth=2 expandtab ai -->
 </html>

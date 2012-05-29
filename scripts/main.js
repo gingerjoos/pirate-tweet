@@ -1,19 +1,24 @@
-function fetch_pirate_tweets() {
-	var username = $('#id-username').val();
-	var tweetContainer = $('#tweet-wrap');
-	fetch_tweets_and_translate(username,tweetContainer);
-}
+$(document).ready(function() {
+	$('#pt-form').submit(function () {
+		var username = $('#id-username').val();
+		var tweetContainer = $('#tweet-wrap');
+		tweetContainer.show();
+		tweetContainer.addClass('loading');
+		fetch_tweets_and_translate(username,tweetContainer);
+		return false;
+	});
+});
 
 function fetch_tweets_and_translate(username,tweetContainer) {
 	var url = 'https://api.twitter.com/1/statuses/user_timeline.json?screen_name=' + username + '&include_rts=true&callback=?';
 	$.getJSON(url,function(data) {
-		var out = '<ol>';
+		var out = '<div class="t-msg">Translating...</div>' + '<ol>';
 		$.each(data,function(i,item) {
 			out = out + '<li>' + item.text + '</li>';
 		});
 		out = out + '</ol>';
 		tweetContainer.html(out);
-		var translated = translate_to_ps(out,tweetContainer);
+		translate_to_ps(out,tweetContainer);
 	});
 }
 
@@ -29,5 +34,7 @@ function translate_to_ps(tweets,tweetContainer) {
 			function(data) {
 				var result = data.query.results.result;
 				tweetContainer.html(result);
+				tweetContainer.removeClass('loading');
+				$('.t-msg').hide();
 			});
 }
